@@ -146,12 +146,11 @@ def generate_content_background(df, api_key, model, content_types, num_variation
                     "3. Các đoạn rap phải thật sự khác biệt về flow, cấu trúc, ý tưởng, hình ảnh, không lặp lại lối mòn, không nhàm chán.\n"
                     "4. ƯU TIÊN: Sáng tạo, phá cách, bất ngờ, dùng hình ảnh liên tưởng, ẩn dụ, punchline độc đáo, phong cách riêng biệt. Hãy tưởng tượng như một rapper chuyên nghiệp tạo ra mỗi đoạn là một màu sắc riêng.\n"
                     "5. Mỗi đoạn rap gồm đúng 2 câu. Trình bày mỗi câu trên một dòng riêng biệt.\n"
-                    "6. Mỗi câu PHẢI bắt đầu bằng hai emoji (icon), độc đáo, liên quan đến âm nhạc, tiệc tùng, sinh nhật, cảm xúc, v.v. (ví dụ: 🎤, 🎶, 🎵, 🎧, 🥳, 🎂, 🎸, 🎺, 🎷, 🕺, 💃, 🔥, ✨, 😎, 😍, ...). Emoji không lặp lại giữa các câu.\n"
-                    "7. Đoạn rap phải đọc lên có vần điệu, tự nhiên, không bị sượng, không ép vần, nghe như một đoạn rap thực sự.\n"
-                    "8. Không gộp 2 câu vào một dòng.\n"
-                    "9. Không trả về đoạn rap chỉ có 1 câu.\n"
-                    "10. Toàn bộ đoạn rap (2 dòng) không vượt quá 120 ký tự.\n"
-                    "11. Đảm bảo chất lượng cao, nghe tự nhiên, phù hợp văn hóa Việt Nam.\n"
+                    "6. Mỗi câu PHẢI bắt đầu bằng một hoặc hai emoji (icon) liên quan đến âm nhạc, tiệc tùng, sinh nhật, cảm xúc, v.v. (ví dụ: 🎤, 🎶, 🎵, 🎧, 🥳, 🎂, 🎸, 🎺, 🎷, 🕺, 💃, 🔥, ✨, 😎, 😍, v.v.). Ưu tiên các emoji nhiều màu sắc, sáng tạo, không lặp lại giữa các câu, có thể kết hợp 2 emoji đầu dòng để thêm phần sinh động.\n"
+                    "7. Không gộp 2 câu vào một dòng.\n"
+                    "8. Không trả về đoạn rap chỉ có 1 câu.\n"
+                    "9. Toàn bộ đoạn rap (2 dòng) không vượt quá 120 ký tự.\n"
+                    "10. Đảm bảo chất lượng cao, nghe tự nhiên, phù hợp văn hóa Việt Nam.\n"
                     f"Chỉ trả về đúng {num_variations} đoạn rap theo yêu cầu. Các đoạn rap (mỗi đoạn gồm 2 dòng) phải cách nhau bằng 1 dòng trống. Tuyệt đối không thêm giải thích, tiêu đề, hay đánh số thứ tự. "
                     "Tuyệt đối không sử dụng từ ngữ tục tĩu, bạo lực, phản cảm, hoặc xưng hô thiếu lịch sự (ví dụ: mày, tao, ...). Chỉ dùng ngôn ngữ lịch sự, phù hợp văn hóa Việt Nam."
                 )
@@ -245,7 +244,8 @@ def generate_content_background(df, api_key, model, content_types, num_variation
                 # Nếu không có biến thể mới nào được thêm vào, dừng vòng lặp để tránh lặp vô hạn
                 if len(all_variations) == prev_count:
                     break
-                if ctype == 'Rap' and len(all_variations) >= num_variations:
+                # Nếu đã đủ số lượng cho loại hiện tại, thoát vòng lặp của loại đó
+                if len(all_variations) >= num_variations:
                     break
             # Nếu sau max_retry vẫn chưa đủ, hỏi user có muốn tiếp tục hay skip
             if len(all_variations) < num_variations:
@@ -255,108 +255,23 @@ def generate_content_background(df, api_key, model, content_types, num_variation
                     'waiting_user': True,
                     'row_idx': idx,
                     'ctype': ctype,
-                    'row': row.to_dict(),
+                    'row': row,
                     'num_variations': num_variations,
                     'output_format': output_format,
-                    'results': results
+                    'results': results,
+                    'api_key': api_key,
+                    'model': model,
+                    'content_types': content_types,
+                    'event': event
                 }
-                return  # Dừng lại để chờ quyết định user
-            variations = all_variations[:num_variations]
-            # Ghi đủ num_variations dòng cho mỗi loại, nếu thiếu thì tiếp tục sinh bù cho đến khi đủ hoặc hết max_retry
-            i = 0
-            retry_count = 0
-            max_retry_bu = 1000
-            valid_variations = []
-            # Lọc các biến thể hợp lệ ban đầu
+                return
+            # Chỉ lấy đúng số lượng yêu cầu mỗi loại
+            all_variations = all_variations[:num_variations]
+            # Ghi kết quả từng loại vào danh sách tổng
             for v in all_variations:
-                if ctype == 'Wish':
-                    if has_multiple_pronouns(v) or count_words(v) > 25:
-                        continue
-                valid_variations.append(v)
-            # Nếu chưa đủ, tiếp tục sinh bù (chỉ cho Wish: kiểm tra cả xưng hô và số từ)
-            while len(valid_variations) < num_variations and retry_count < max_retry_bu:
-                result = call_gemini_api(api_key, model, prompt)
-                new_variations = []
-                if ctype == 'Rap':
-                    rap_pairs = []
-                    temp = []
-                    for line in result.split('\n'):
-                        if line.strip():
-                            temp.append(line.strip())
-                            if len(temp) == 2:
-                                rap = '\n'.join(temp)
-                                # Kiểm tra độ dài đoạn rap (<=120 ký tự)
-                                if rap not in valid_variations and len(rap) <= 120:
-                                    rap_pairs.append(rap)
-                                temp = []
-                    new_variations = rap_pairs
-                elif ctype == 'Poem':
-                    poems = []
-                    poem_lines = []
-                    for line in result.split('\n'):
-                        if line.strip() == '':
-                            if poem_lines:
-                                if len(poem_lines) == 4:
-                                    poem = '\n'.join(poem_lines)
-                                    if poem not in valid_variations:
-                                        poems.append(poem)
-                                poem_lines = []
-                        else:
-                            poem_lines.append(line.strip())
-                            if len(poem_lines) == 4:
-                                poem = '\n'.join(poem_lines)
-                                if poem not in valid_variations:
-                                    poems.append(poem)
-                                poem_lines = []
-                    if poem_lines and len(poem_lines) == 4:
-                        poem = '\n'.join(poem_lines)
-                        if poem not in valid_variations:
-                            poems.append(poem)
-                    poems = [p for p in poems if is_luc_bat_4c(p)]
-                    new_variations = poems
-                elif ctype == 'Wish':
-                    if isinstance(result, str):
-                        wish_lines = [v.strip() for v in result.split('\n') if v.strip()]
-                    else:
-                        wish_lines = []
-                    for wish in wish_lines:
-                        if not has_multiple_pronouns(wish) and count_words(wish) <= 25 and wish not in valid_variations:
-                            new_variations.append(wish)
-                else:
-                    if isinstance(result, str):
-                        lines = [v.strip() for v in result.split('\n') if v.strip()]
-                    else:
-                        lines = []
-                    for line in lines:
-                        if line not in valid_variations:
-                            new_variations.append(line)
-                valid_variations.extend([v for v in new_variations if v not in valid_variations])
-                retry_count += 1
-            # Ghi đúng num_variations dòng cho mỗi loại
-            for i in range(num_variations):
-                if i < len(valid_variations):
-                    content = valid_variations[i]
-                    point = call_gemini_score_api(api_key, model, content, ctype)
-                    results.append({
-                        'Tagline': row['Tagline'],
-                        'Prompt': row['Prompt'],
-                        'Content_Type': ctype,
-                        'Variation_Index': i+1,
-                        'Content': content,
-                        'Point': point
-                    })
-                else:
-                    results.append({
-                        'Tagline': row['Tagline'],
-                        'Prompt': row['Prompt'],
-                        'Content_Type': ctype,
-                        'Variation_Index': i+1,
-                        'Content': 'Không sinh được biến thể hợp lệ',
-                        'Point': None
-                    })
+                results.append({'Tagline': row['Tagline'], 'Prompt': row['Prompt'], 'Type': ctype, 'Content': v})
                 current += 1
                 task_progress[task_id]['current'] = current
-                task_progress[task_id]['total'] = total
     # Đảm bảo tên file output là {task_id}.csv/xlsx, không có prefix "result_"
     output_path = os.path.join(app.config['OUTPUT_FOLDER'], f"{task_id}.csv")
     if output_format == 'xlsx':
@@ -480,10 +395,8 @@ def user_decision():
         results.append({
             'Tagline': row['Tagline'],
             'Prompt': row['Prompt'],
-            'Content_Type': ctype,
-            'Variation_Index': 1,
-            'Content': 'Không sinh được biến thể hợp lệ (user skip)',
-            'Point': None
+            'Type': ctype,
+            'Content': 'Không sinh được biến thể hợp lệ (user skip)'
         })
         info['current'] = info.get('current', 0) + 1
         task_progress[task_id] = {'current': info['current'], 'total': info['total']}
