@@ -56,11 +56,14 @@ def has_multiple_pronouns(text):
 
 def call_gemini_score_api(api_key, model, content, ctype):
     """Gửi nội dung lên Gemini để chấm điểm chất lượng (1-10) cho từng thể loại."""
+    # Luôn dùng model riêng cho chấm điểm
+    score_model = "gemini-2.5-flash-preview-04-17"
     pronoun_criteria = "Không sử dụng nhiều xưng hô trong cùng một câu (ví dụ: bạn/em/chị), chỉ chọn một xưng hô phù hợp hoặc dùng từ trung tính."
     if ctype == 'Rap':
         score_prompt = (
             f"Hãy chấm điểm chất lượng đoạn rap sau trên thang điểm 10 (1 là tệ nhất, 10 là xuất sắc). "
-            "Tiêu chí: ngôn ngữ trẻ trung, sáng tạo, vần điệu tốt, flow cuốn hút, có điểm nhấn, cảm xúc rõ ràng, đa dạng ý tưởng, emoji đầu dòng sáng tạo, tự nhiên, phù hợp văn hóa Việt Nam, không phản cảm. "
+            "Tiêu chí: ngôn ngữ trẻ trung, sáng tạo, vần điệu tốt, flow cuốn hút, có điểm nhấn, cảm xúc rõ ràng, đa dạng ý tưởng, emoji đầu dòng phải thật sáng tạo, giữ, độc đáo, không lặp lại, tự nhiên, phù hợp văn hóa Việt Nam, không phản cảm. "
+            "Đặc biệt: Nội dung phải đọc có vần điệu, không bị sượng, không ép vần thiếu tự nhiên, nghe như một đoạn rap thực sự. "
             f"{pronoun_criteria} "
             "Chỉ trả về duy nhất một số nguyên từ 1 đến 10, không giải thích.\n"
             f"Đoạn rap:\n{content}"
@@ -68,7 +71,7 @@ def call_gemini_score_api(api_key, model, content, ctype):
     elif ctype == 'Wish':
         score_prompt = (
             f"Hãy chấm điểm chất lượng lời chúc sinh nhật sau trên thang điểm 10 (1 là tệ nhất, 10 là xuất sắc). "
-            "Tiêu chí: ngắn gọn, súc tích, truyền tải ý nghĩa, chân thành, cảm hứng tích cực, đa dạng, ấm áp, tự nhiên, icon cảm xúc phù hợp, không phản cảm, phù hợp văn hóa Việt Nam. "
+            "Tiêu chí: ngắn gọn, súc tích, sáng tạo, dễ thương, ý nghĩa, truyền tải cảm hứng tích cực, đa dạng, ấm áp, tự nhiên, icon cảm xúc phù hợp, không phản cảm, phù hợp văn hóa Việt Nam. "
             f"{pronoun_criteria} "
             "Chỉ trả về duy nhất một số nguyên từ 1 đến 10, không giải thích.\n"
             f"Lời chúc:\n{content}"
@@ -77,6 +80,7 @@ def call_gemini_score_api(api_key, model, content, ctype):
         score_prompt = (
             f"Hãy chấm điểm chất lượng bài thơ lục bát 4 câu sau trên thang điểm 10 (1 là tệ nhất, 10 là xuất sắc). "
             "Tiêu chí: đúng thể thơ lục bát 4 câu (6-8-6-8 chữ), sáng tạo, truyền cảm xúc, ý nghĩa, không lặp lại nguyên văn Tagline/Prompt, đa dạng ý tưởng, tự nhiên, không phản cảm, phù hợp văn hóa Việt Nam. "
+            "Đặc biệt: Nội dung phải đọc có vần điệu, không bị sượng, không ép vần thiếu tự nhiên, nghe như một bài thơ thực sự. "
             f"{pronoun_criteria} "
             "Chỉ trả về duy nhất một số nguyên từ 1 đến 10, không giải thích.\n"
             f"Bài thơ:\n{content}"
@@ -89,7 +93,7 @@ def call_gemini_score_api(api_key, model, content, ctype):
             "Chỉ trả về duy nhất một số nguyên từ 1 đến 10, không giải thích.\n"
             f"Nội dung:\n{content}"
         )
-    score_text = call_gemini_api(api_key, model, score_prompt)
+    score_text = call_gemini_api(api_key, score_model, score_prompt)
     match = re.search(r'\b([1-9]|10)\b', str(score_text))
     if match:
         return int(match.group(1))
