@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Content Event Generator</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <div class="container card">
+        <h2 style="text-align:center; font-weight:700; letter-spacing:1px; margin-bottom:28px; font-size:1.7em; color:#009966; padding-top:8px;">✨ Content Event Generator ✨</h2>
+        <form id="gen-form">
+            <label class="label-main">Chọn file CSV:</label>
+            <input type="file" name="csv_file" accept=".csv" required class="input-main"><br>
+            <label class="label-main">API Key:</label>
+            <input type="text" name="api_key" value="AIzaSyBNU2IteZpqb93aISVU38Z0fN9r_Wc3_qs" required class="input-main"><br>
+            <label class="label-main">Model:</label>
+            <input type="text" name="model" value="gemini-2.0-flash" required class="input-main"><br>
+            <label class="label-main">Chọn loại nội dung:</label>
+            <div class="checkbox-group">
+                <label>
+                    <input type="checkbox" name="content_types" value="Rap" checked>
+                    <span class="icon">🎤</span> Rap
+                </label>
+                <label>
+                    <input type="checkbox" name="content_types" value="Wish">
+                    <span class="icon">🎉</span> Wish
+                </label>
+                <label>
+                    <input type="checkbox" name="content_types" value="Poem">
+                    <span class="icon">📝</span> Poem
+                </label>
+            </div>
+            <label class="label-main">Định dạng file kết quả:</label>
+            <div class="radio-group">
+                <label><input type="radio" name="output_format" value="csv" checked> CSV</label>
+                <label><input type="radio" name="output_format" value="xlsx"> XLSX</label>
+            </div>
+            <label class="label-main">Số lượng biến thể mỗi loại:</label>
+            <input type="number" name="num_variations" min="1" max="30" value="10" class="input-main" style="width:120px;display:inline-block;"> <span style="color:#888;font-size:0.98em;">(1-30)</span><br>
+            <label class="label-main">Chủ đề sự kiện (tùy chọn):</label>
+            <select name="event" id="event" class="input-main">
+                <option value="">-- Không chọn --</option>
+                {% for ev, ev_label in events %}
+                <option value="{{ ev }}">{{ ev_label }}</option>
+                {% endfor %}
+            </select><br>
+            <button type="submit" class="btn-main" style="display:block;width:100%;margin-bottom:18px;"><span style="font-size:1.1em;">🚀</span> Bắt đầu xử lý</button>
+            <!-- Đã xoá thanh tiến độ màu xám dư thừa ở đây -->
+        </form>
+        <div id="progress" style="margin-top:20px;">
+            <div id="progress-bar" class="progress-bar-inner"></div>
+            <div id="progress-text"></div>
+        </div>
+        <div id="result" style="margin-top:20px;"></div>
+    </div>
+    <script src="/static/js/scripts.js"></script>
+</body>
+</html>

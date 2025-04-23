@@ -1,0 +1,372 @@
+/* Định nghĩa các biến màu sắc và font chữ */
+:root {
+    --clay-green: #177245;
+    --clay-green-dark: #14532d;
+    --clay-green-teal: #1abc9c;
+    --clay-green-gray: #b7d8c2;
+    --clay-bg: #f4fbf7;
+    --clay-accent: #e0ff70;
+    --clay-shadow: #14532d33;
+    --clay-shadow-dark: #14532d66;
+    --clay-shadow-3d: 0 8px 24px 0 #14532d33, 0 1.5px 0 0 #fff6 inset;
+    --clay-shadow-hover: 0 4px 12px 0 #14532d33, 0 1.5px 0 0 #fff6 inset;
+    --clay-glossy: linear-gradient(180deg,rgba(255,255,255,0.23) 0%,rgba(255,255,255,0.04) 100%);
+    --clay-radius: 34px;
+    --clay-radius-btn: 18px;
+    --clay-radius-input: 12px;
+    --clay-transition: all 0.23s cubic-bezier(.3,1.5,.5,1.1);
+    --clay-font: 'Montserrat', Arial, sans-serif;
+}
+
+/* Thiết lập chung cho toàn trang */
+body {
+    background: linear-gradient(135deg, var(--clay-bg) 0%, var(--clay-green-gray) 100%);
+    font-family: var(--clay-font);
+    min-height: 100vh;
+    margin: 0;
+    color: var(--clay-green-dark);
+    line-height: 1.7;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+/* Định dạng khung card chính */
+.container.card {
+    background: #fff;
+    border-radius: var(--clay-radius);
+    box-shadow: var(--clay-shadow-3d);
+    padding: 32px 28px 28px 28px;
+    max-width: 640px;
+    width: 100%;
+    margin: auto;
+    border: none;
+    position: relative;
+    overflow: visible;
+}
+
+/* Định dạng tiêu đề H2 */
+h2 {
+    text-align: center;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    margin-bottom: 35px;
+    font-size: 2em;
+    color: var(--clay-green-teal);
+    padding-top: 10px;
+}
+
+/* Định dạng nhãn (label) chính */
+.label-main {
+    font-weight: 600;
+    margin-top: 0.8rem;
+    margin-bottom: 0.25rem;
+    display: block;
+    color: var(--clay-green-dark);
+    font-size: 0.95em;
+}
+
+label, .label-main, legend,
+.checkbox-group label, .radio-group label,
+input[type="radio"] + label, input[type="checkbox"] + label {
+    color: var(--clay-green-teal) !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.02em;
+    background: none !important;
+    transition: color 0.2s;
+}
+
+/* Định dạng chung cho các input, select, checkbox/radio group */
+.input-main, select, input[type="number"], input[type="text"], textarea {
+    border-radius: var(--clay-radius-input);
+    border: none;
+    padding: 13px 18px;
+    width: 100%;
+    font-size: 1em;
+    background: var(--clay-green-gray);
+    box-shadow: 0 2px 8px 0 #14532d22, 0 1.5px 0 0 #fff6 inset;
+    transition: var(--clay-transition);
+    box-sizing: border-box;
+    margin-bottom: 1.1rem;
+    outline: none;
+    color: #222c35 !important;
+    font-weight: 600 !important;
+    font-family: var(--clay-font);
+}
+
+.input-main:focus, select:focus, input[type="number"]:focus, input[type="text"]:focus, textarea:focus {
+    background: #f4fbf7;
+    box-shadow: 0 4px 16px 0 #14532d44, 0 1.5px 0 0 #fff6 inset;
+}
+
+.input-main::placeholder, input[type="text"]::placeholder, textarea::placeholder {
+    color: #7ca98c !important;
+    opacity: 1;
+}
+
+/* === Khu vực Chọn file CSV === */
+/* Tùy chỉnh giao diện cho input chọn file */
+input[type="file"].input-main::file-selector-button {
+    background: var(--clay-green-teal);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 11px 22px;
+    margin-right: 15px;
+    cursor: pointer;
+    font-size: 1em;
+    font-family: var(--clay-font);
+    box-shadow: 0 2px 8px 0 #14532d22, 0 1.5px 0 0 #fff6 inset;
+    transition: var(--clay-transition);
+}
+input[type="file"].input-main::file-selector-button:hover {
+    background: var(--clay-accent);
+    color: var(--clay-green-dark);
+}
+
+/* === Khu vực API Key, Model, Số lượng biến thể, Chủ đề sự kiện === */
+/* Định dạng các input text, select, number */
+.input-main, select, input[type="number"], input[type="text"], textarea {
+    border-radius: var(--clay-radius-input);
+    border: none;
+    padding: 13px 18px;
+    width: 100%;
+    font-size: 1em;
+    background: var(--clay-green-gray);
+    box-shadow: 0 2px 8px 0 #14532d22, 0 1.5px 0 0 #fff6 inset;
+    transition: var(--clay-transition);
+    box-sizing: border-box;
+    margin-bottom: 1.1rem;
+    outline: none;
+    color: #222c35 !important;
+    font-weight: 600 !important;
+    font-family: var(--clay-font);
+}
+
+.input-main:focus, select:focus, input[type="number"]:focus, input[type="text"]:focus, textarea:focus {
+    background: #f4fbf7;
+    box-shadow: 0 4px 16px 0 #14532d44, 0 1.5px 0 0 #fff6 inset;
+}
+
+/* === Khu vực Chọn loại nội dung (Checkbox) === */
+/* --- Custom lại checkbox group cho đẹp, đồng bộ --- */
+.checkbox-group,
+.radio-group {
+    width: 100%;
+    box-sizing: border-box;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    margin-left: 0;
+    margin-right: 0;
+    display: flex;
+    justify-content: flex-start;
+    gap: 24px;
+    align-items: center;
+}
+
+.radio-group {
+    justify-content: flex-start;
+    gap: 24px;
+    align-items: center;
+}
+
+.checkbox-group label, .radio-group label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    margin-right: 8px;
+    margin-bottom: 0;
+    background: none !important;
+    box-shadow: none !important;
+    border: none !important;
+    padding: 0;
+    color: #222c35 !important;
+    font-size: 1em;
+    border-radius: 0;
+}
+
+.checkbox-group .icon, .radio-group .icon {
+    background: none !important;
+    box-shadow: none !important;
+    border: none !important;
+    margin-right: 2px;
+    font-size: 1.1em;
+    vertical-align: middle;
+}
+
+.checkbox-group input[type="checkbox"], .radio-group input[type="radio"] {
+    box-shadow: none !important;
+    background: none !important;
+    border-radius: 4px;
+    accent-color: var(--clay-green-teal);
+    width: 26px;
+    height: 26px;
+    min-width: 26px;
+    min-height: 26px;
+    margin-right: 6px;
+    cursor: pointer;
+}
+
+.checkbox-group label span, .radio-group label span {
+    color: var(--clay-green-teal) !important;
+    font-weight: 700 !important;
+}
+
+/* Giữ màu đen/xám đậm cho text các option (checkbox/radio) */
+.checkbox-group label, .radio-group label {
+    color: #222c35 !important;
+    font-weight: 700 !important;
+}
+
+/* Label group chính vẫn giữ màu xanh dương */
+label.label-group, legend.label-group {
+    color: var(--clay-green-teal) !important;
+    font-weight: 700 !important;
+}
+
+/* === Khu vực Định dạng file kết quả (Radio) === */
+/* Tùy chỉnh giao diện cho Radio button */
+.radio-group {
+    display: flex;
+    gap: 18px;
+    align-items: center;
+    padding: 6px 0 6px 2px;
+    margin-top: 0;
+}
+
+.radio-group label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-weight: 500;
+    cursor: pointer;
+    margin-bottom: 0;
+}
+
+/* === Khu vực Nút Bắt đầu xử lý === */
+/* Định dạng nút chính (submit) */
+.btn-main, #download-link {
+    font-size: 1.13rem;
+    font-weight: bold;
+    padding: 15px 44px;
+    border-radius: var(--clay-radius-btn);
+    background: linear-gradient(90deg, var(--clay-green-dark) 0%, var(--clay-green) 60%, var(--clay-green-teal) 100%);
+    color: #fff;
+    border: none;
+    text-decoration: none;
+    box-shadow: var(--clay-shadow-3d);
+    transition: var(--clay-transition);
+    margin: 0 auto 0.25rem auto;
+    display: inline-block;
+    font-family: var(--clay-font);
+    outline: none;
+    position: relative;
+    z-index: 1;
+    background-clip: padding-box;
+    overflow: hidden;
+}
+
+.btn-main::after, #download-link::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; height: 46%;
+    border-radius: var(--clay-radius-btn) var(--clay-radius-btn) 50% 50%/60% 60% 40% 40%;
+    background: var(--clay-glossy);
+    pointer-events: none;
+    z-index: 2;
+    transition: opacity 0.3s;
+}
+
+.btn-main:hover, #download-link:hover {
+    background: linear-gradient(90deg, var(--clay-accent) 0%, var(--clay-green) 60%, var(--clay-green-dark) 100%);
+    color: #fff;
+    box-shadow: var(--clay-shadow-hover);
+    transform: translateY(3px) scale(0.98);
+}
+
+.btn-main:active, #download-link:active {
+    box-shadow: 0 2px 8px 0 #14532d33, 0 1.5px 0 0 #fff6 inset;
+    transform: translateY(6px) scale(0.96);
+}
+
+/* === Khu vực Hiển thị kết quả === */
+/* Định dạng khu vực hiển thị kết quả */
+#result {
+    margin-top: 25px;
+    display: none;
+    text-align: center;
+    background: none;
+    border: none;
+    border-radius: 0;
+    padding: 0;
+}
+
+/* Responsive cho màn hình nhỏ (mobile) */
+@media (max-width: 600px) {
+    .container.card {
+        padding: 16px 4px 14px 4px;
+        border-radius: 22px;
+    }
+
+    .btn-main, #download-link {
+        padding: 13px 12px;
+        font-size: 1em;
+        border-radius: 14px;
+    }
+}
+
+/* Google Fonts cho Montserrat */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+
+option {
+    background: #fff;
+    color: #333;
+    font-family: inherit;
+}
+
+::-webkit-input-placeholder, ::placeholder {
+    color: #7ca98c !important;
+    opacity: 1;
+}
+
+label, h2, h3, h4, h5, h6 {
+    color: var(--clay-green-dark) !important;
+}
+
+/* Progress Bar - Khôi phục hiện đại, bo tròn, chuyển động mượt */
+#progress {
+    margin-top: 20px;
+    width: 100%;
+}
+
+.progress-bar-inner, #progress-bar {
+    width: 0%;
+    height: 22px;
+    background: linear-gradient(90deg, var(--clay-accent) 0%, var(--clay-green) 100%);
+    border-radius: 14px;
+    box-shadow: 0 2px 8px 0 #14532d33 inset;
+    color: #14532d;
+    font-weight: 700;
+    font-size: 1.13em;
+    line-height: 22px;
+    text-align: center;
+    transition: width 0.5s cubic-bezier(.3,1.5,.5,1.1), background 0.3s;
+    position: relative;
+    overflow: hidden;
+    letter-spacing: 0.5px;
+}
+
+#progress-text {
+    margin-top: 8px;
+    font-size: 1.08em;
+    color: var(--clay-green-dark);
+    font-weight: 500;
+    text-align: center;
+    width: 100%;
+    display: block;
+}
