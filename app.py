@@ -145,7 +145,7 @@ def generate_content_background(df, api_key, model, content_types, num_variation
                     "6. Mỗi câu PHẢI bắt đầu bằng một hoặc hai emoji (icon) liên quan đến âm nhạc, tiệc tùng, sinh nhật, cảm xúc, v.v. (ví dụ: 🎤, 🎶, 🎵, 🎧, 🥳, 🎂, 🎸, 🎺, 🎷, 🕺, 💃, 🔥, ✨, 😎, 😍, v.v.). Ưu tiên các emoji nhiều màu sắc, sáng tạo, không lặp lại giữa các câu, có thể kết hợp 2 emoji đầu dòng để thêm phần sinh động.\n"
                     "7. Không gộp 2 câu vào một dòng.\n"
                     "8. Không trả về đoạn rap chỉ có 1 câu.\n"
-                    "9. Toàn bộ đoạn rap (2 dòng) không vượt quá 150 ký tự.\n"
+                    "9. Toàn bộ đoạn rap (2 dòng) không vượt quá 120 ký tự.\n"
                     "10. Đảm bảo chất lượng cao, nghe tự nhiên, phù hợp văn hóa Việt Nam.\n"
                     f"Chỉ trả về đúng {num_variations} đoạn rap theo yêu cầu. Các đoạn rap (mỗi đoạn gồm 2 dòng) phải cách nhau bằng 1 dòng trống. Tuyệt đối không thêm giải thích, tiêu đề, hay đánh số thứ tự. "
                     "Tuyệt đối không sử dụng từ ngữ tục tĩu, bạo lực, phản cảm, hoặc xưng hô thiếu lịch sự (ví dụ: mày, tao, ...). Chỉ dùng ngôn ngữ lịch sự, phù hợp văn hóa Việt Nam."
@@ -187,7 +187,8 @@ def generate_content_background(df, api_key, model, content_types, num_variation
                             temp.append(line.strip())
                             if len(temp) == 2:
                                 rap = '\n'.join(temp)
-                                if rap not in tried_texts:
+                                # Kiểm tra độ dài đoạn rap (<=120 ký tự)
+                                if rap not in tried_texts and len(rap) <= 120:
                                     rap_pairs.append(rap)
                                     tried_texts.add(rap)
                                 temp = []
@@ -239,7 +240,7 @@ def generate_content_background(df, api_key, model, content_types, num_variation
                 # Nếu không có biến thể mới nào được thêm vào, dừng vòng lặp để tránh lặp vô hạn
                 if len(all_variations) == prev_count:
                     break
-                if len(all_variations) >= num_variations:
+                if ctype == 'Rap' and len(all_variations) >= num_variations:
                     break
             # Nếu sau max_retry vẫn chưa đủ, hỏi user có muốn tiếp tục hay skip
             if len(all_variations) < num_variations:
@@ -279,7 +280,8 @@ def generate_content_background(df, api_key, model, content_types, num_variation
                             temp.append(line.strip())
                             if len(temp) == 2:
                                 rap = '\n'.join(temp)
-                                if rap not in valid_variations:
+                                # Kiểm tra độ dài đoạn rap (<=120 ký tự)
+                                if rap not in valid_variations and len(rap) <= 120:
                                     rap_pairs.append(rap)
                                 temp = []
                     new_variations = rap_pairs
